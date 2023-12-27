@@ -3,6 +3,7 @@ import React, { FC } from "react";
 import { ArrowLeftIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Applicants from "@/components/organisms/Applicants";
+import JobDetail from "@/components/organisms/JobDetail";
 
 interface JobDetailPageProps {}
 
@@ -24,12 +25,14 @@ const JobDetailPage: FC<JobDetailPageProps> = () => {
       <Tabs defaultValue="applicants">
         <TabsList className="mb-8">
           <TabsTrigger value="applicants">Applicants</TabsTrigger>
-          <TabsTrigger value="jobDetails">Job Details</TabsTrigger>
+          <TabsTrigger value="jobDetail">Job Detail</TabsTrigger>
         </TabsList>
         <TabsContent value="applicants">
           <Applicants />
         </TabsContent>
-        <TabsContent value="jobDetails"></TabsContent>
+        <TabsContent value="jobDetail">
+          <JobDetail />
+        </TabsContent>
       </Tabs>
     </div>
   );
