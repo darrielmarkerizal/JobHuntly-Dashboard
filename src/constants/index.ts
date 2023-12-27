@@ -162,3 +162,43 @@ export const LOCATION_OPTIONS: optionType[] = [
   { id: "Macau", label: "Macau" },
   { id: "Afghanistan", label: "Afghanistan" },
 ];
+
+export const EMPLOYEE_OPTIONS: optionType[] = [
+  {
+    id: "1-50",
+    label: "1-50",
+  },
+  {
+    id: "51-150",
+    label: "51-150",
+  },
+  {
+    id: "151-250",
+    label: "151-250",
+  },
+  {
+    id: "251-500",
+    label: "251-500",
+  },
+  {
+    id: "501-1000",
+    label: "501-1000",
+  },
+  {
+    id: "1000-above",
+    label: "1000-above",
+  },
+];
+
+export const INDUSTRY_OPTION: optionType[] = [
+  { id: "1", label: "Technology" },
+  { id: "2", label: "Healthcare" },
+  { id: "3", label: "Finance" },
+  { id: "4", label: "Manufacturing" },
+  { id: "5", label: "Education" },
+  { id: "6", label: "Retail" },
+  { id: "7", label: "Transportation" },
+  { id: "8", label: "Construction" },
+  { id: "9", label: "Real Estate" },
+  { id: "10", label: "Food & Beverage" },
+];

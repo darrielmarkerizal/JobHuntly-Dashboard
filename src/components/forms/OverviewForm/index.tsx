@@ -6,6 +6,7 @@ import FieldInput from "@/components/organisms/FieldInput";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,16 +21,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { LOCATION_OPTIONS, optionType } from "@/constants";
+import {
+  EMPLOYEE_OPTIONS,
+  INDUSTRY_OPTION,
+  LOCATION_OPTIONS,
+  optionType,
+} from "@/constants";
 import { overviewFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import InputSkills from "@/components/organisms/InputSkills";
+import MyCKEditor from "@/components/organisms/CKEditor";
 
 interface OverviewProps {}
 
 const OverviewForm: FC<OverviewProps> = ({}) => {
+  const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof overviewFormSchema>>({
     resolver: zodResolver(overviewFormSchema),
   });
@@ -37,6 +57,11 @@ const OverviewForm: FC<OverviewProps> = ({}) => {
   const onSubmit = (val: z.infer<typeof overviewFormSchema>) => {
     console.log(val);
   };
+
+  useEffect(() => {
+    setEditorLoaded(true);
+  }, []);
+
   return (
     <div>
       <div className="my-5">
@@ -125,8 +150,133 @@ const OverviewForm: FC<OverviewProps> = ({}) => {
                   </FormItem>
                 )}
               />
+
+              <div className="w-[450px] grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="employee"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Employee</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Employee" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {EMPLOYEE_OPTIONS.map(
+                            (item: optionType, i: number) => (
+                              <SelectItem key={item.id + 1} value={item.id}>
+                                {item.label}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="industry"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Indusry</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Industry" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {INDUSTRY_OPTION.map(
+                            (item: optionType, i: number) => (
+                              <SelectItem key={item.id + 1} value={item.id}>
+                                {item.label}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="dateFounded"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Date Founded</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[45 0px] pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <InputSkills
+                form={form}
+                name="techStack"
+                label="Add Tech Stack"
+              />
             </div>
           </FieldInput>
+
+          <FieldInput
+            title="About Company"
+            subtitle="Brief description for your company. URLs are hyperlinked"
+          >
+            <MyCKEditor
+              form={form}
+              name="description"
+              editorLoaded={editorLoaded}
+            />
+          </FieldInput>
+
+          <div className="flex justify-end">
+            <Button size="lg">Save Changes</Button>
+          </div>
         </form>
       </Form>
     </div>
