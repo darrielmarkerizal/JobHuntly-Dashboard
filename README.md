@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# JobHuntly Dashboard CMS
+
+## Overview
+
+Welcome to the JobHuntly Dashboard CMS repository! This project is aimed at providing a comprehensive content management system for managing job-related information, including posting jobs, listing available positions, viewing job details and applicants, and configuring settings.
+
+### Features
+
+- **Post Job:** Easily create and publish job listings.
+- **Job Listing:** View a list of all available job positions.
+- **Job Detail and Applicants:** Dive into specific job details and manage applicants.
+- **Setting:**
+  - Overview: Configure general settings for the CMS.
+  - Social Media: Manage social media settings.
+  - Teams: Handle team-related configurations.
+
+### Technologies Used
+
+- Next.js: A React framework for building server-rendered applications.
+- Tailwind CSS: A utility-first CSS framework for rapid UI development.
+- ShadcnUI: (Note: Assuming this is a custom or specific UI library you're using)
+- Supabase: An open-source alternative to Firebase for building modern apps.
+- TypeScript: A statically typed superset of JavaScript for enhanced code quality.
+- Next Auth: Authentication library for Next.js applications.
+- Railway: A platform for deploying and managing web applications.
 
 ## Getting Started
 
-First, run the development server:
+To run the JobHuntly Dashboard CMS locally, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Clone the repository:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```bash
+   git clone https://github.com/darrielmarkerizal/JobHuntly-Dashboard.git
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Install dependencies:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```bash
+   cd JobHuntly-Dashboard
+   npm install
+   ```
 
-## Learn More
+3. Configure environment variables:
 
-To learn more about Next.js, take a look at the following resources:
+   Create a `.env.local` file in the root directory and add the necessary environment variables. For example:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+4. Run the development server:
 
-## Deploy on Vercel
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to access the JobHuntly Dashboard CMS.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Notes
+
+This project is currently in development, and additional features and improvements are actively being worked on. Please be aware of potential bugs or incomplete functionalities. Your feedback and contributions are highly appreciated.
+
+## Contributing
+
+If you would like to contribute to the development of JobHuntly Dashboard CMS, please follow our [contribution guidelines](CONTRIBUTING.md).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
