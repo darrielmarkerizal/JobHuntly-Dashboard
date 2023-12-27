@@ -33,6 +33,15 @@ export const JOB_LISTING_COLUMN: string[] = [
   "Needs",
 ];
 
+export const JOB_APPLICANT_COLUMN: string[] = ["Name", "Applied Date"];
+
+export const JOB_APPLICANT_DATA = [
+  {
+    name: "Darriel Markerizal",
+    appliedDate: "27 December 2023",
+  },
+];
+
 export const JOB_LISTING_DATA = [
   {
     roles: "Software Engineer",
