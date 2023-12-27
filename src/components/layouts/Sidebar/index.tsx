@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import React, { FC } from "react";
 import {
@@ -7,12 +9,15 @@ import {
   AiOutlineMessage,
   AiOutlineUsergroupAdd,
 } from "react-icons/ai";
-import { FaRegBuilding, FaRegClipboard } from "react-icons/fa";
+import { HiOutlineClipboard } from "react-icons/hi";
 import { BsGear } from "react-icons/bs";
+import { BsBuildings } from "react-icons/bs";
+import { useRouter } from "next/navigation";
 
 interface sidebarProps {}
 
 const Sidebar: FC<sidebarProps> = ({}) => {
+  const router = useRouter();
   return (
     <div className="pb-12 min-h-screen">
       <div className="space-y-4 py-4">
@@ -22,6 +27,7 @@ const Sidebar: FC<sidebarProps> = ({}) => {
             <Button
               variant={"ghost"}
               className="w-full justify-start rounded-none hover:text-primary"
+              onClick={() => router.push("/")}
             >
               <AiOutlineHome className="mr-2 text-lg" />
               Home
@@ -37,7 +43,7 @@ const Sidebar: FC<sidebarProps> = ({}) => {
               variant={"ghost"}
               className="w-full justify-start rounded-none hover:text-primary"
             >
-              <FaRegBuilding className="mr-2 text-lg" />
+              <BsBuildings className="mr-2 text-lg" />
               Company Profile
             </Button>
             <Button
@@ -50,8 +56,9 @@ const Sidebar: FC<sidebarProps> = ({}) => {
             <Button
               variant={"ghost"}
               className="w-full justify-start rounded-none hover:text-primary"
+              onClick={() => router.push("/job-listings")}
             >
-              <FaRegClipboard className="mr-2 text-lg" />
+              <HiOutlineClipboard className="mr-2 text-lg" />
               Job Listing
             </Button>
             <Button
