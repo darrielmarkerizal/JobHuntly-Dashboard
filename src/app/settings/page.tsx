@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OverviewForm from "@/components/forms/OverviewForm";
+import SocialMediaForm from "@/components/forms/SocialMediaForm";
 
 interface SettingsProps {}
 
@@ -17,7 +18,9 @@ const SettingsPage: FC<SettingsProps> = ({}) => {
         <TabsContent value="overview">
           <OverviewForm />
         </TabsContent>
-        <TabsContent value="socialLinks">Social Links</TabsContent>
+        <TabsContent value="socialLinks">
+          <SocialMediaForm />
+        </TabsContent>
         <TabsContent value="teams">Teams</TabsContent>
       </Tabs>
     </div>
