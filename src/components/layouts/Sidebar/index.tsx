@@ -77,7 +77,8 @@ const Sidebar: FC<sidebarProps> = ({}) => {
           <div className="space-y-3">
             <Button
               variant={"ghost"}
-              className="w-full justify-start rounded-none hover:text-primary "
+              className="w-full justify-start rounded-none hover:text-primary"
+              onClick={() => router.push("/settings")}
             >
               <BsGear className="mr-2 text-lg" />
               Settings

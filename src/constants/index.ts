@@ -1,4 +1,4 @@
-import { EnumValues } from "zod";
+import { EnumValues, string } from "zod";
 import { benefitType } from "./types";
 
 export const JOBTYPES: EnumValues = [
@@ -7,6 +7,11 @@ export const JOBTYPES: EnumValues = [
   "Remote",
   "Internship",
 ];
+
+export type optionType = {
+  id: string;
+  label: string;
+};
 
 export const BENEFITS: benefitType[] = [
   // {
@@ -133,4 +138,27 @@ export const JOB_LISTING_DATA = [
     applicants: 16,
     needs: 14,
   },
+];
+
+export const LOCATION_OPTIONS: optionType[] = [
+  { id: "Indonesia", label: "Indonesia" },
+  { id: "Singapore", label: "Singapore" },
+  { id: "Malaysia", label: "Malaysia" },
+  { id: "Thailand", label: "Thailand" },
+  { id: "Vietnam", label: "Vietnam" },
+  { id: "Philippines", label: "Philippines" },
+  { id: "Myanmar", label: "Myanmar" },
+  { id: "Cambodia", label: "Cambodia" },
+  { id: "Laos", label: "Laos" },
+  { id: "Brunei", label: "Brunei" },
+  { id: "Timor-Leste", label: "Timor-Leste" },
+  { id: "China", label: "China" },
+  { id: "Hong Kong", label: "Hong Kong" },
+  { id: "Taiwan", label: "Taiwan" },
+  { id: "Japan", label: "Japan" },
+  { id: "South Korea", label: "South Korea" },
+  { id: "North Korea", label: "North Korea" },
+  { id: "Mongolia", label: "Mongolia" },
+  { id: "Macau", label: "Macau" },
+  { id: "Afghanistan", label: "Afghanistan" },
 ];
