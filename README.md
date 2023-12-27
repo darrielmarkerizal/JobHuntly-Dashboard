@@ -22,6 +22,7 @@ Welcome to the JobHuntly Dashboard CMS repository! This project is aimed at prov
 - Supabase: An open-source alternative to Firebase for building modern apps.
 - TypeScript: A statically typed superset of JavaScript for enhanced code quality.
 - Next Auth: Authentication library for Next.js applications.
+- Prisma: A modern database toolkit for TypeScript and Node.js.
 - Railway: A platform for deploying and managing web applications.
 
 ## Getting Started
@@ -50,13 +51,25 @@ To run the JobHuntly Dashboard CMS locally, follow these steps:
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
    ```
 
-4. Run the development server:
+4. Run database migrations:
+
+   ```bash
+   npx prisma db push
+   ```
+
+5. Generate Prisma client:
+
+   ```bash
+   npx prisma generate
+   ```
+
+6. Run the development server:
 
    ```bash
    npm run dev
    ```
 
-5. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to access the JobHuntly Dashboard CMS.
+7. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to access the JobHuntly Dashboard CMS.
 
 ## Notes
 
