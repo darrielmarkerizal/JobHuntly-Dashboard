@@ -1,31 +1,50 @@
 "use client";
 
-import React, { FC } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { signInFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { signIn } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
-interface SignUpPageProps {}
+interface SignInPageProps {}
 
-const SignUpPage: FC<SignUpPageProps> = ({}) => {
+const SignInPage: FC<SignInPageProps> = ({}) => {
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
   });
 
-  const onSubmit = (val: z.infer<typeof signInFormSchema>) => {
-    console.log(val);
+  const { toast } = useToast();
+
+  const router = useRouter();
+
+  const onSubmit = async (val: z.infer<typeof signInFormSchema>) => {
+    const authenticated = await signIn("credentials", {
+      ...val,
+      redirect: false,
+    });
+
+    if (authenticated?.error) {
+      console.log("Authentication error:", authenticated.error);
+      toast({
+        title: "Error",
+        description: "Email or Password maybe wrong",
+      });
+    }
+
+    await router.push("/");
   };
 
   return (
@@ -50,7 +69,7 @@ const SignUpPage: FC<SignUpPageProps> = ({}) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Enter your email" {...field} />
+                      <Input placeholder="Enter your email..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -76,7 +95,7 @@ const SignUpPage: FC<SignUpPageProps> = ({}) => {
               <Button className="w-full">Sign In</Button>
 
               <div className="text-sm">
-                Don`t have an account?{" "}
+                Don`t have an account{" "}
                 <Link href="/auth/signup" className="text-primary">
                   Sign Up
                 </Link>
@@ -89,4 +108,4 @@ const SignUpPage: FC<SignUpPageProps> = ({}) => {
   );
 };
 
-export default SignUpPage;
+export default SignInPage;
