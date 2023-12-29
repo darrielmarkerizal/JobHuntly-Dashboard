@@ -1,17 +1,15 @@
-import React, { FC, useEffect, useRef } from "react";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { FC, useEffect, useRef } from "react";
 
 interface CKEditorProps {
   form: any;
-  name: string;
+  name: any;
   editorLoaded?: boolean;
 }
 
-const MyCKEditor: FC<CKEditorProps> = ({ form, name, editorLoaded }) => {
+const CKEditor: FC<CKEditorProps> = ({ form, name, editorLoaded }) => {
   const editorRef = useRef<any>();
-  const { CKEditor: Editor, ClassicEditor } = editorRef.current || {};
+  const { CKEditor, ClassicEditor } = editorRef.current || {};
 
   useEffect(() => {
     editorRef.current = {
@@ -29,7 +27,7 @@ const MyCKEditor: FC<CKEditorProps> = ({ form, name, editorLoaded }) => {
             data={form.getValues(name)}
             onChange={(event: any, editor: any) => {
               const data = editor.getData();
-              form.setValues({ [name]: data });
+              form.setValue(name, data);
             }}
           />
           <FormField
@@ -49,4 +47,4 @@ const MyCKEditor: FC<CKEditorProps> = ({ form, name, editorLoaded }) => {
   );
 };
 
-export default MyCKEditor;
+export default CKEditor;

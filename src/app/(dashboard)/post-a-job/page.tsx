@@ -1,10 +1,10 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { jobFormSchema } from "@/lib/form-schema";
 import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { jobFormSchema } from "@/lib/form-schema";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeftIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -16,11 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import FieldInput from "@/components/organisms/FieldInput";
-import { Input } from "@/components/ui/input";
-import { JOBTYPES } from "@/constants";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -28,14 +23,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import FieldInput from "@/components/organisms/FieldInput";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { JOBTYPES } from "@/constants";
 import InputSkills from "@/components/organisms/InputSkills";
-import MyCKEditor from "@/components/organisms/CKEditor";
+import CKEditor from "@/components/organisms/CKEditor";
 import InputBenefits from "@/components/organisms/InputBenefits";
 import { Button } from "@/components/ui/button";
 
-interface PostJobProps {}
+import useSWR from "swr";
+import { fetcher } from "@/lib/utils";
+import { CategoryJob } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
-const PostJobPage: FC<PostJobProps> = ({}) => {
+import moment from "moment";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+
+interface PostJobPageProps {}
+
+const PostJobPage: FC<PostJobPageProps> = ({}) => {
+  const { data } = useSWR<CategoryJob[]>("/api/job/categories", fetcher);
+
+  const { data: session } = useSession();
+  const { toast } = useToast();
+
+  const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof jobFormSchema>>({
     resolver: zodResolver(jobFormSchema),
     defaultValues: {
@@ -43,10 +58,43 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
     },
   });
 
-  const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
+  const router = useRouter();
 
-  const onSubmit = (val: z.infer<typeof jobFormSchema>) => {
-    console.log(val);
+  const onSubmit = async (val: z.infer<typeof jobFormSchema>) => {
+    try {
+      const body: any = {
+        applicants: 0,
+        benefits: val.benefits,
+        categoryId: val.categoryId,
+        companyId: session?.user.id!!,
+        datePosted: moment().toDate(),
+        description: val.jobDescription,
+        dueDate: moment().add(1, "M").toDate(),
+        jobType: val.jobType,
+        needs: 20,
+        niceToHaves: val.niceToHaves,
+        requiredSkills: val.requiredSkills,
+        responsibility: val.responsibility,
+        roles: val.roles,
+        salaryFrom: val.salaryFrom,
+        salaryTo: val.salaryTo,
+        whoYouAre: val.whoYouAre,
+      };
+
+      await fetch("/api/job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      await router.push("/job-listings");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Please try again",
+      });
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -59,12 +107,14 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
         <ArrowLeftIcon className="w-7 h-7" />
         <span className="text-2xl font-semibold">Post a Job</span>
       </div>
+
       <div className="my-5">
         <div className="text-lg font-semibold">Basic Information</div>
-        <div className="text-gray-400 ">
-          List out your top perks and benefits
+        <div className="text-gray-400">
+          List out your top perks and benefits.
         </div>
       </div>
+
       <Separator />
 
       <Form {...form}>
@@ -81,15 +131,14 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
               name="roles"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
+                      className="w-[450px]"
                       placeholder="e.g. Software Engineer"
                       {...field}
-                      className="w-[450px]"
                     />
                   </FormControl>
-                  <FormDescription>At least 80 characters.</FormDescription>
+                  <FormDescription>At least 80 characters</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -137,15 +186,11 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
             <div className="w-[450px] flex flex-row justify-between items-center">
               <FormField
                 control={form.control}
-                name="salaryForm"
+                name="salaryFrom"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        placeholder="Rp. 10.000.000"
-                        {...field}
-                        className="w-full"
-                      />
+                      <Input className="w-full" placeholder="$100" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -159,9 +204,9 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Rp. 20.000.000"
-                        {...field}
                         className="w-full"
+                        placeholder="$1000"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -173,7 +218,7 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
 
           <FieldInput
             title="Categories"
-            subtitle="You can select multiple job categories"
+            subtitle="You can select job categories"
           >
             <FormField
               control={form.control}
@@ -191,13 +236,11 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@example.com">
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value="m@google.com">m@google.com</SelectItem>
-                      <SelectItem value="m@support.com">
-                        m@support.com
-                      </SelectItem>
+                      {data?.map((item: CategoryJob) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -214,10 +257,10 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
           </FieldInput>
 
           <FieldInput
-            title="Job Description"
+            title="Job Descriptions"
             subtitle="Job titles must be describe one position"
           >
-            <MyCKEditor
+            <CKEditor
               form={form}
               name="jobDescription"
               editorLoaded={editorLoaded}
@@ -228,7 +271,7 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
             title="Responsibilities"
             subtitle="Outline the core responsibilities of the position"
           >
-            <MyCKEditor
+            <CKEditor
               form={form}
               name="responsibility"
               editorLoaded={editorLoaded}
@@ -239,7 +282,7 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
             title="Who You Are"
             subtitle="Add your preferred candidates qualifications"
           >
-            <MyCKEditor
+            <CKEditor
               form={form}
               name="whoYouAre"
               editorLoaded={editorLoaded}
@@ -250,7 +293,7 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
             title="Nice-To-Haves"
             subtitle="Add nice-to-have skills and qualifications for the role to encourage a more diverse set of candidates to apply"
           >
-            <MyCKEditor
+            <CKEditor
               form={form}
               name="niceToHaves"
               editorLoaded={editorLoaded}
@@ -265,7 +308,7 @@ const PostJobPage: FC<PostJobProps> = ({}) => {
           </FieldInput>
 
           <div className="flex justify-end">
-            <Button size="lg">Do a review</Button>
+            <Button size="lg">Do a Review</Button>
           </div>
         </form>
       </Form>
