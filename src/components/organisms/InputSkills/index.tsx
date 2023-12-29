@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { jobFormSchema } from "@/lib/form-schema";
 import { PlusIcon } from "lucide-react";
-import React, { FC, useState, useRef } from "react";
+import React, { FC, useState, useRef, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { string, z } from "zod";
 
@@ -45,6 +45,14 @@ const InputSkills: FC<InputSkillsProps> = ({ form, name, label }) => {
     setValues(skills);
     form.setValue(name, skills);
   };
+
+  useEffect(() => {
+    const val = form.getValues(name);
+
+    if (val && val.length > 0) {
+      setValues(val);
+    }
+  }, [form, name]);
 
   return (
     <FormField

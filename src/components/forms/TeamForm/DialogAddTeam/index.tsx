@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FC } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -13,9 +14,9 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { teamFormSchema } from "@/lib/form-schema";
+import { socialMediaFormSchema, teamFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Separator } from "@radix-ui/react-select";
+import { Separator } from "@/components/ui/separator";
 import {
   Form,
   FormControl,
@@ -25,6 +26,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface DialogAddTeamProps {}
 
@@ -33,25 +37,52 @@ const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
     resolver: zodResolver(teamFormSchema),
   });
 
-  const onSubmit = (val: z.infer<typeof teamFormSchema>) => {
-    console.log(val);
+  const { data: session } = useSession();
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const onSubmit = async (val: z.infer<typeof teamFormSchema>) => {
+    try {
+      const body = {
+        ...val,
+        companyId: session?.user.id,
+      };
+
+      await fetch("/api/company/teams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      toast({
+        title: "Success",
+        description: "Add member success",
+      });
+
+      await router.refresh();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Please try again",
+      });
+      console.log(error);
+    }
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button>
-          <PlusIcon className="w-4 h-4 mr-2" />
-          Add Member
+          <PlusIcon className="h-4 w-4 mr-2" />
+          Add member
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add new team member</DialogTitle>
-          <DialogDescription>
-            Fill the field to add new team member
-          </DialogDescription>
+          <DialogTitle>Add new team</DialogTitle>
+          <DialogDescription>Fill the field to add new team</DialogDescription>
         </DialogHeader>
+
         <Separator />
 
         <Form {...form}>
@@ -69,7 +100,6 @@ const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="position"
@@ -83,7 +113,6 @@ const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
                 </FormItem>
               )}
             />
-
             <div className="grid grid-cols-2 gap-3">
               <FormField
                 control={form.control}
@@ -98,21 +127,21 @@ const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="linkedin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Linkedin</FormLabel>
+                    <FormLabel>LinkedIn</FormLabel>
                     <FormControl>
-                      <Input placeholder="Linkedin" {...field} />
+                      <Input placeholder="LinkedIn" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+
             <Button>Save</Button>
           </form>
         </Form>
