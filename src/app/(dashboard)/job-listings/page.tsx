@@ -1,27 +1,26 @@
-import React, { FC } from "react";
+import { FC } from "react";
+
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import ButtonActionTable from "@/components/organisms/ButtonActionTable";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { JOB_LISTING_COLUMN, JOB_LISTING_DATA } from "@/constants";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { MoreVertical } from "lucide-react";
-import { useRouter } from "next/navigation";
-import ButtonActionTable from "@/components/organisms/ButtonActionTable";
-import { getServerSession } from "next-auth";
-import prisma from "../../../../lib/prisma";
-import moment from "moment";
+import { JOB_LISTING_COLUMN } from "@/constants";
 import { dateFormat } from "@/lib/utils";
 import { Job } from "@prisma/client";
+import moment from "moment";
+import { getServerSession } from "next-auth";
+import prisma from "../../../../lib/prisma";
 
 interface JobListingsPageProps {}
+
+export const revalidate = 0;
 
 async function getDataJobs() {
   const session = await getServerSession(authOptions);
@@ -38,9 +37,12 @@ async function getDataJobs() {
 const JobListingsPage: FC<JobListingsPageProps> = async ({}) => {
   const jobs = await getDataJobs();
 
+  console.log(jobs);
+
   return (
     <div>
-      <div className="text-3xl font-semibold">Job Listings Page</div>
+      <div className="font-semibold text-3xl">Job Listings</div>
+
       <div className="mt-10">
         <Table>
           <TableHeader>
