@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import {
   Table,
   TableBody,
@@ -14,10 +15,29 @@ import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ButtonActionTable from "@/components/organisms/ButtonActionTable";
+import { getServerSession } from "next-auth";
+import prisma from "../../../../lib/prisma";
+import moment from "moment";
+import { dateFormat } from "@/lib/utils";
+import { Job } from "@prisma/client";
 
 interface JobListingsPageProps {}
 
-const JobListingsPage: FC<JobListingsPageProps> = () => {
+async function getDataJobs() {
+  const session = await getServerSession(authOptions);
+
+  const jobs = prisma.job.findMany({
+    where: {
+      companyId: session?.user.id,
+    },
+  });
+
+  return jobs;
+}
+
+const JobListingsPage: FC<JobListingsPageProps> = async ({}) => {
+  const jobs = await getDataJobs();
+
   return (
     <div>
       <div className="text-3xl font-semibold">Job Listings Page</div>
@@ -32,14 +52,18 @@ const JobListingsPage: FC<JobListingsPageProps> = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {JOB_LISTING_DATA.map((item: any, i: number) => (
+            {jobs.map((item: Job, i: number) => (
               <TableRow key={item.roles + i}>
                 <TableCell>{item.roles}</TableCell>
                 <TableCell>
-                  <Badge>{item.status}</Badge>
+                  {moment(item.datePosted).isBefore(item.dueDate) ? (
+                    <Badge>Live</Badge>
+                  ) : (
+                    <Badge variant="destructive">Expired</Badge>
+                  )}
                 </TableCell>
-                <TableCell>{item.datePosted}</TableCell>
-                <TableCell>{item.dueDate}</TableCell>
+                <TableCell>{dateFormat(item.datePosted)}</TableCell>
+                <TableCell>{dateFormat(item.dueDate)}</TableCell>
                 <TableCell>
                   <Badge variant="outline">{item.jobType}</Badge>
                 </TableCell>
@@ -48,7 +72,7 @@ const JobListingsPage: FC<JobListingsPageProps> = () => {
                   {item.applicants} / {item.needs}
                 </TableCell>
                 <TableCell>
-                  <ButtonActionTable url="/job-detail/1" />
+                  <ButtonActionTable url={`/job-detail/${item.id}`} />
                 </TableCell>
               </TableRow>
             ))}
